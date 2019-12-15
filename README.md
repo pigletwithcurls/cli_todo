@@ -10,6 +10,7 @@ A simple todo app for command line created with Python and `prompt-toolkit` libr
 
 #### TODO:
 * [ ] Add functions to `addTodo`, `moveToInProgress`, `moveToCompleted`
+* [ ] Get size of terminal screen
 * [ ] Improve UI and deisgn (colour and structure)
 * [ ] Maybe refactor code into smaller files to manage better
 * [ ] (More to come...)
