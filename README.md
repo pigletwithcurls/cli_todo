@@ -6,7 +6,7 @@ A simple todo app for command line created with Python and `prompt-toolkit` libr
 #### Current State:
 * Has a basic structure of a todo app with three columns of todo list, in progress list, and completed list.
 * Largely based on the example code from python-prompt-toolkit repository.
-* [!alt text](./todo-initial.png)
+* ![](./todo-initial.png)
 
 #### TODO:
 * [ ] Add functions to `addTodo`, `moveToInProgress`, `moveToCompleted`
