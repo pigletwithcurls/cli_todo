@@ -1,4 +1,4 @@
-# [Work In Progress] Todo App on Command Line
+# Todo App on Command Line
 
 ### Overview
 A simple todo app for command line created with `Python` and `prompt-toolkit` library.
