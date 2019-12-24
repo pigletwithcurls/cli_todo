@@ -9,11 +9,10 @@ A simple todo app for command line created with `Python` and `prompt-toolkit` li
 ![](./cli-todo.gif)
 
 #### TODO:
-* [ ] Add functionalities:
-  * [ ] `addTodo`
-  * [ ] `moveToInProgress`
-  * [ ] `moveToCompleted`
-* [ ] Get size of terminal screen
+* [x] Add functionalities:
+  * [x] `addTodo`
+  * [x] `moveToInProgress`
+  * [x] `moveToCompleted`
 * [ ] Improve UI and deisgn (colour and structure)
 * [ ] Maybe refactor code into smaller files to manage better
 * [ ] (More to come...)
