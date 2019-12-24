@@ -39,7 +39,6 @@ input_field = TextArea(
     wrap_lines=False,
 )
 
-
 todo_field = TextArea(style="class:output-field")
 inprogress_field = TextArea(style="class:output-field")
 completed_field = TextArea(style="class:output-field")
@@ -67,6 +66,9 @@ categories = [
         align=WindowAlign.CENTER,
     ),
 ]
+
+field_style = {"padding": 1, "padding_style": "bg:#000000", "padding_char": "-"}
+title_style = "bg:#000000 #ffffff"
 
 
 def accept(buff):
@@ -129,9 +131,7 @@ def refreshCompleted():
 # 1. The layout
 body = HSplit(
     [
-        Frame(
-            Window(FormattedTextControl(TITLE), height=7), style="bg:#000000 #ffffff"
-        ),
+        Frame(Window(FormattedTextControl(TITLE), height=7), style=title_style),
         VSplit(categories, height=1, padding=4, padding_style="bg:#000000",),
         VSplit(
             [
@@ -139,27 +139,27 @@ body = HSplit(
                 Frame(
                     HSplit(
                         [todo_field],
-                        padding=1,
-                        padding_style="bg:#000000",
-                        padding_char="-",
+                        padding=field_style["padding"],
+                        padding_style=field_style["padding_style"],
+                        padding_char=field_style["padding_char"],
                     )
                 ),
                 # In Progress
                 Frame(
                     HSplit(
                         [inprogress_field],
-                        padding=1,
-                        padding_style="bg:#000000",
-                        padding_char="-",
+                        padding=field_style["padding"],
+                        padding_style=field_style["padding_style"],
+                        padding_char=field_style["padding_char"],
                     )
                 ),
                 # TODO Completed
                 Frame(
                     HSplit(
                         [completed_field],
-                        padding=1,
-                        padding_style="bg:#000000",
-                        padding_char="-",
+                        padding=field_style["padding"],
+                        padding_style=field_style["padding_style"],
+                        padding_char=field_style["padding_char"],
                     )
                 ),
             ],
