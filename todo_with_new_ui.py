@@ -3,16 +3,11 @@
 In Progress: TODO App with new UI design.
 """
 from prompt_toolkit.application import Application
-from prompt_toolkit.document import Document
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout.containers import (
     HSplit,
-    VSplit,
-    Window,
-    WindowAlign,
 )
-from prompt_toolkit.layout.controls import FormattedTextControl
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.widgets import Box, Frame, Label, TextArea
 
@@ -34,7 +29,8 @@ root_container = Box(
     HSplit([
         Label(text='Add TODO Items'),
         Frame(input_field),
-    ])
+    ]),
+    padding_top=3,
 )
 
 layout = Layout(container=root_container)
