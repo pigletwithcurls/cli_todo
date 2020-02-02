@@ -17,13 +17,13 @@ from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.widgets import Frame, TextArea
 
 TITLE = HTML(
-    """<u>Todo Example</u> experiment.
+    """ <u>Todo Application</u>
  Press <b>'q'</b> to quit.
 
- At the beginning of prompt:
- Add 'add' to add a todo item to TODO list.
- Add 'mp [item index]' to move a todo item from TODO list to In Progress.
- Add 'mc [item index]' to move a todo item from In Progress to Completed.
+ To use TODO Application, type:
+ 'add' to add a todo item to TODO list.
+ 'mp [item index]' to move an item from TODO to In Progress.
+ 'mc [item index]' to move an item from In Progress to Completed.
  """
 )
 
@@ -45,7 +45,7 @@ completed_field = TextArea(style="class:output-field")
 
 categories = [
     Window(
-        FormattedTextControl(HTML("<u>TODO List</u>")),
+        FormattedTextControl(HTML("<u>TODO</u>")),
         height=4,
         ignore_content_width=True,
         style="bg:#70cb98 #000000 bold",
@@ -59,7 +59,7 @@ categories = [
         align=WindowAlign.CENTER,
     ),
     Window(
-        FormattedTextControl(HTML("<u>TODO Completed</u>")),
+        FormattedTextControl(HTML("<u>Completed</u>")),
         height=4,
         ignore_content_width=True,
         style="bg:#70cb98 #000000 bold",
