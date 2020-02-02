@@ -37,11 +37,12 @@ input_field = TextArea(
     style="class:input-field",
     multiline=False,
     wrap_lines=False,
+    dont_extend_height=True,
 )
 
-todo_field = TextArea(style="class:output-field")
-inprogress_field = TextArea(style="class:output-field")
-completed_field = TextArea(style="class:output-field")
+todo_field = TextArea(focusable=False, style="class:output-field")
+inprogress_field = TextArea(focusable=False, style="class:output-field")
+completed_field = TextArea(focusable=False, style="class:output-field")
 
 categories = [
     Window(
@@ -80,7 +81,7 @@ def accept(buff):
         elif input_field.text[:2] == "mc":
             moveToCompleted(input_field.text[3])
     except BaseException as e:
-        print("\nError", e)
+        return
 
 
 input_field.accept_handler = accept
@@ -172,6 +173,7 @@ body = HSplit(
     ]
 )
 
+
 # 2. Key bindings
 kb = KeyBindings()
 
@@ -184,10 +186,7 @@ def _(event):
 
 # 3. The `Application`
 application = Application(
-    layout=Layout(body, focused_element=input_field),
-    key_bindings=kb,
-    mouse_support=True,
-    full_screen=True,
+    layout=Layout(body), key_bindings=kb, mouse_support=True, full_screen=True,
 )
 
 
