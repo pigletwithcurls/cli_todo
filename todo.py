@@ -24,8 +24,11 @@ TITLE = HTML(
  'add' to add a todo item to TODO list.
  'mp [item index]' to move an item from TODO to In Progress.
  'mc [item index]' to move an item from In Progress to Completed.
- """
+ 'del [todo item]' to remove an item from TODO list.
+"""
 )
+
+title_height = 8
 
 todo_list = []
 inprogress_list = []
@@ -80,6 +83,8 @@ def accept(buff):
             moveToInProgress(input_field.text[3])
         elif input_field.text[:2] == "mc":
             moveToCompleted(input_field.text[3])
+        elif input_field.text[:3] == "del":
+            deleteTodo(input_field.text[4:])
     except BaseException as e:
         return
 
@@ -129,10 +134,23 @@ def refreshCompleted():
     completed_field.buffer.document = Document(text=completed_text)
 
 
+def deleteTodo(todo):
+    # Check whether the todo item is in Todo, In Progress, or Completed
+    # Remove the item from the list.
+    if todo in todo_list:
+        todo_list.remove(todo)
+        refreshTodo()
+    elif todo in inprogress_list:
+        inprogress_list.remove(todo)
+        refreshInProgress()
+    elif todo in completed_list:
+        completed_list.remove(todo)
+        refreshCompleted()
+
 # 1. The layout
 body = HSplit(
     [
-        Frame(Window(FormattedTextControl(TITLE), height=7), style=title_style),
+        Frame(Window(FormattedTextControl(TITLE), height=title_height), style=title_style),
         VSplit(categories, height=1, padding=4, padding_style="bg:#000000",),
         VSplit(
             [
