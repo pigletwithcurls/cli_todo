@@ -16,6 +16,8 @@ from prompt_toolkit.layout.controls import FormattedTextControl
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.widgets import Frame, TextArea
 
+from slugify import slugify
+
 TITLE = HTML(
     """ <u>Todo Application</u>
  Press <b>'q'</b> to quit.
@@ -43,36 +45,27 @@ input_field = TextArea(
     dont_extend_height=True,
 )
 
-todo_field = TextArea(focusable=False, style="class:output-field")
-inprogress_field = TextArea(focusable=False, style="class:output-field")
-completed_field = TextArea(focusable=False, style="class:output-field")
-
-categories = [
-    Window(
-        FormattedTextControl(HTML("<u>TODO</u>")),
-        height=4,
-        ignore_content_width=True,
-        style="bg:#70cb98 #000000 bold",
-        align=WindowAlign.CENTER,
-    ),
-    Window(
-        FormattedTextControl(HTML("<u>In Progress</u>")),
-        height=4,
-        ignore_content_width=True,
-        style="bg:#70cb98 #000000 bold",
-        align=WindowAlign.CENTER,
-    ),
-    Window(
-        FormattedTextControl(HTML("<u>Completed</u>")),
-        height=4,
-        ignore_content_width=True,
-        style="bg:#70cb98 #000000 bold",
-        align=WindowAlign.CENTER,
-    ),
+column_info = [
+    {"title": "TODO", "height": 4, "bg_color": "#70cb98", "fg_color": "#000000"},
+    {"title": "In Progress", "height": 4, "bg_color": "#70cb98", "fg_color": "#000000"},
+    {"title": "Completed", "height": 4, "bg_color": "#70cb98", "fg_color": "#000000"}
 ]
 
-field_style = {"padding": 1, "padding_style": "bg:#000000", "padding_char": "-"}
-title_style = "bg:#000000 #ffffff"
+
+def create_headers(column_info):
+    # Replace manual categories
+    # column_info = {title: 'TODO', height: 4, bg_color: '#70cb98', fg_color: '#000000'}
+    return [Window(
+        FormattedTextControl(HTML(f"<u>{column['title']}</u>")),
+        height=column['height'],
+        ignore_content_width=True,
+        style=f"bg:{column['bg_color']} {column['fg_color']} bold",
+        align=WindowAlign.CENTER,
+    ) for column in column_info]
+
+
+def generate_fields(field_names):
+    return [{field_name: TextArea(focusable=False, style="class:output-field")} for field_name in field_names]
 
 
 def accept(buff):
@@ -85,7 +78,7 @@ def accept(buff):
             moveToCompleted(input_field.text[3])
         elif input_field.text[:3] == "del":
             deleteTodo(input_field.text[4:])
-    except BaseException as e:
+    except BaseException:
         return
 
 
@@ -94,44 +87,44 @@ input_field.accept_handler = accept
 
 def addTodo(todo):
     todo_list.append(todo)
-    refreshTodo()
+    refreshTodo(field_names[0])
 
 
-def refreshTodo():
+def refreshTodo(todo_field):
     todo_text = ""
     for i in range(len(todo_list)):
         todo_text += "[" + str(i) + "] " + todo_list[i] + "\n"
-    todo_field.buffer.document = Document(text=todo_text)
+    fields_list[0][todo_field].buffer.document = Document(text=todo_text)
 
 
 def moveToInProgress(todo_index):
     item = todo_list[int(todo_index)]
     todo_list.pop(int(todo_index))
-    refreshTodo()
+    refreshTodo(field_names[0])
     inprogress_list.append(item)
-    refreshInProgress()
+    refreshInProgress(field_names[1])
 
 
-def refreshInProgress():
+def refreshInProgress(inprogress_field):
     inprogress_text = ""
     for i in range(len(inprogress_list)):
         inprogress_text += "[" + str(i) + "] " + inprogress_list[i] + "\n"
-    inprogress_field.buffer.document = Document(text=inprogress_text)
+    fields_list[1][inprogress_field].buffer.document = Document(text=inprogress_text)
 
 
 def moveToCompleted(inprogress_index):
     item = inprogress_list[int(inprogress_index)]
     inprogress_list.pop(int(inprogress_index))
-    refreshInProgress()
+    refreshInProgress(field_names[1])
     completed_list.append(item)
-    refreshCompleted()
+    refreshCompleted(field_names[2])
 
 
-def refreshCompleted():
+def refreshCompleted(completed_field):
     completed_text = ""
     for i in range(len(completed_list)):
         completed_text += "[" + str(i) + "] " + completed_list[i] + "\n"
-    completed_field.buffer.document = Document(text=completed_text)
+    fields_list[2][completed_field].buffer.document = Document(text=completed_text)
 
 
 def deleteTodo(todo):
@@ -147,50 +140,52 @@ def deleteTodo(todo):
         completed_list.remove(todo)
         refreshCompleted()
 
-# 1. The layout
-body = HSplit(
-    [
-        Frame(Window(FormattedTextControl(TITLE), height=title_height), style=title_style),
-        VSplit(categories, height=1, padding=4, padding_style="bg:#000000",),
-        VSplit(
-            [
-                # TODO List
-                Frame(
-                    HSplit(
-                        [todo_field],
-                        padding=field_style["padding"],
-                        padding_style=field_style["padding_style"],
-                        padding_char=field_style["padding_char"],
-                    )
-                ),
-                # In Progress
-                Frame(
-                    HSplit(
-                        [inprogress_field],
-                        padding=field_style["padding"],
-                        padding_style=field_style["padding_style"],
-                        padding_char=field_style["padding_char"],
-                    )
-                ),
-                # TODO Completed
-                Frame(
-                    HSplit(
-                        [completed_field],
-                        padding=field_style["padding"],
-                        padding_style=field_style["padding_style"],
-                        padding_char=field_style["padding_char"],
-                    )
-                ),
-            ],
-            padding=1,
-            padding_style="bg:#000000 #ffffff",
-            padding_char=".",
-        ),
-        Window(height=1, char="-", style="class:line"),
-        input_field,
-    ]
-)
 
+def generate_columns(fields_list):
+    return [Frame(
+        HSplit(
+            [field[key]],
+            padding=field_style["padding"],
+            padding_style=field_style["padding_style"],
+            padding_char=field_style["padding_char"],
+        )
+    ) for field in fields_list for key in field.keys()]
+
+
+def generate_body():
+    return HSplit([title_frame, header_frame, columns_frame, line, input_field])
+
+
+def generate_title():
+    return Frame(Window(FormattedTextControl(TITLE), height=title_height), style=title_style)
+
+
+def generate_header_frame():
+    return VSplit(headers, height=1, padding=4, padding_style="bg:#000000",)
+
+
+def generate_columns_frame():
+    return  VSplit(
+                columns,
+                padding=1,
+                padding_style="bg:#000000 #ffffff",
+                padding_char=".",
+            )
+
+
+# 1. The layout
+field_names = [f"{slugify(column['title'])}_field" for column in column_info]
+fields_list = generate_fields(field_names)
+field_style = {"padding": 1, "padding_style": "bg:#000000", "padding_char": "-"}
+title_style = "bg:#000000 #ffffff"
+headers = create_headers(column_info)
+fields_list = generate_fields(field_names)
+columns = generate_columns(fields_list)
+title_frame = generate_title()
+header_frame = generate_header_frame()
+columns_frame = generate_columns_frame()
+line = Window(height=1, char="-", style="class:line")
+body = generate_body()
 
 # 2. Key bindings
 kb = KeyBindings()
